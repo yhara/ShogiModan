@@ -13,6 +13,10 @@ describe "ShogiModan::Compiler" do
     it "should match a opecode" do
       ShogiModan::Compiler::REXP_CODE.should match("▲１二歩")
     end
+
+    it "should match a 'same'" do
+      ShogiModan::Compiler::REXP_CODE.should match("▲同　歩")
+    end
   end
 
   context "#compile" do
@@ -20,14 +24,9 @@ describe "ShogiModan::Compiler" do
       ShogiModan::Compiler.new(src).compile
     end
 
-    it "should compile two opecodes" do
-      code = compile("▲１二歩△３四金")
-      code.should == [[:mov, 1, 2], [:add, 3, 4]]
-    end
-
-    it "should compile a label" do
-      code = compile("▲１一飛 △３四金 *1 this will be skipped")
-      code.should == [[:jump_if, 1, 1], [:add, 3, 4], [:label, 1]]
+    it "should compile a program" do
+      code = compile("▲１一飛 △同　金 *1 this will be skipped")
+      code.should == [[:jump_if, 1, 1], [:sub, 1, 1], [:label, 1]]
     end
   end
 end

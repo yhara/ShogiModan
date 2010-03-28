@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift "#{File.expand_path File.dirname __FILE__}/../lib/"
+require 'shogimodan'
+require 'kconv'
+
+if ARGV.size == 0
+  puts "usage: #$0 example/hello.modan"
+else
+  $KCODE = "u" if not defined?(Encoding) # for Ruby 1.8
+
+  ARGV.each do |path|
+    ShogiModan.new(File.read(path)).run
+  end
+end

@@ -18,7 +18,7 @@ describe "ShogiModan" do
       src = File.read((File.expand_path File.dirname __FILE__) +
                       "/../examples/hello.modan")
       ShogiModan.new(src, $stdin, out).run
-      buf.should == "Hello, world!"
+      buf.should == "Hello, world!\n"
     end
   end
 end

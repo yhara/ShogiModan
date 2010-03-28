@@ -48,5 +48,7 @@ end
 #  [:putc, 6],
 #  [:add, 4, 1],
 #  [:putc, 4]
+#  [:add, 5, 5],
+#  [:putc, 5]
 #]
 #puts encoder.encode

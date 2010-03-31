@@ -79,6 +79,19 @@ describe 'ShogiModan::Assembly::LLVM' do
         run_by_llvm([[:mul, 9, 8], [:putc, 9, 0], [:sub, 3, 4], [:jump_ifp, 3, 3], [:mul, 8, 7], [:putc, 8, 0], [:label, 3]]).should == "H8"
       end
     end
+
+    context ':push and :pop' do
+      it "print 'FGH'" do
+        run_by_llvm([
+          [:mul, 9, 8], [:push, 9, 0],
+          [:sub, 9, 1], [:push, 9, 0],
+          [:sub, 9, 1], [:push, 9, 0],
+          [:pop, 8, 0], [:putc, 8, 0],
+          [:pop, 8, 0], [:putc, 8, 0],
+          [:pop, 8, 0], [:putc, 8, 0]
+        ]).should == "FGH"
+      end
+    end
   end
 
   context '.body' do

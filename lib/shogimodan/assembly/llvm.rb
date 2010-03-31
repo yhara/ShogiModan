@@ -3,6 +3,9 @@ class ShogiModan
     module LLVM
       HEADER =
         "define void @main() nounwind {\n" <<
+        "%stack = alloca double, i32 1000\n" <<
+        "%sp = alloca i32\n" <<
+        "store i32 0, i32* %sp\n" <<
         "%dst.r = alloca i32\n" <<
         "%r = alloca double, i32 9\n" <<
         (0..8).map {|i|
@@ -75,6 +78,29 @@ class ShogiModan
               <<-"EOL"
               br label %label.#{a}
               label.#{a}:
+              EOL
+            when :push
+              <<-"EOL"
+              %tmp#{c += 1} = getelementptr double* %r, i32 #{a - 1}
+              %tmp#{c += 1} = load double* %tmp#{c - 1}, align 1
+              %tmp#{c += 1} = load i32* %sp
+              %tmp#{c += 1} = getelementptr double* %stack, i32 %tmp#{c - 1}
+              store double %tmp#{c - 2}, double* %tmp#{c}, align 1
+
+              %tmp#{c += 1} = add i32 %tmp#{c - 2}, 1
+              store i32 %tmp#{c}, i32* %sp, align 1
+              EOL
+            when :pop
+              <<-"EOL"
+              %tmp#{c += 1} = load i32* %sp
+              %tmp#{c += 1} = sub i32 %tmp#{c - 1}, 1
+              store i32 %tmp#{c}, i32* %sp, align 1
+
+              %tmp#{c += 1} = getelementptr double* %stack, i32 %tmp#{c - 1}
+              %tmp#{c += 1} = load double* %tmp#{c - 1}
+
+              %tmp#{c += 1} = getelementptr double* %r, i32 #{a - 1}
+              store double %tmp#{c - 1}, double* %tmp#{c}, align 1
               EOL
             when :jump_if, :jump_ifp
               <<-"EOL"

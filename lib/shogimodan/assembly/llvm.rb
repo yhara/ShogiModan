@@ -39,6 +39,8 @@ class ShogiModan
             case inst
             when :add, :mul, :sub
               operate_register.call inst, a, b
+            when :div
+              operate_register.call :fdiv, a, b
             when :putc
               <<-"EOL"
               %tmp#{c += 1} = getelementptr [9 x double]* %r, i32 0, i32 #{a - 1}

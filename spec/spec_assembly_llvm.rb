@@ -39,7 +39,10 @@ describe 'ShogiModan::Assembly::LLVM' do
     it "'s generating code is actually runnable on LLVM" do
       run_by_llvm(@iseqs.take(2)).should == 'H'
       run_by_llvm(@iseqs).should == "Hello, world!\n"
+    end
 
+    it "calculates 9 * 8 / 2 and putc it" do
+      run_by_llvm([[:mul, 9, 8], [:div, 9, 2], [:putc, 9, 0]]).should == "$"
     end
   end
 

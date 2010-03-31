@@ -48,6 +48,14 @@ describe 'ShogiModan::Assembly::LLVM' do
     it "calculates 9 * 8 mod 8 * 5 and putc it" do
       run_by_llvm([[:mul, 9, 8], [:mul, 8, 5], [:mod, 9, 8], [:putc, 9, 0]]).should == " "
     end
+
+    it "print 'H' and '8'" do
+      run_by_llvm([[:mul, 9, 8], [:putc, 9, 0], [:sub, 3, 3], [:jump_if, 3, 3], [:mul, 8, 7], [:putc, 8, 0], [:label, 3]]).should == "H8"
+    end
+
+    it "print 'H' and skip '8'" do
+      run_by_llvm([[:mul, 9, 8], [:putc, 9, 0], [:jump_if, 9, 3], [:mul, 8, 7], [:putc, 8, 0], [:label, 3]]).should == "H"
+    end
   end
 
   context '.body' do
@@ -88,10 +96,14 @@ describe 'ShogiModan::Assembly::LLVM' do
     end
   end
 
-  context '::FOOTER' do
+  context '.footer' do
+    before do
+      @footer_method =
+        ShogiModan::Assembly::LLVM.method(:footer)
+    end
     it 'is the LLVM Assembly code which does preparation such as' <<
     'initializing ShogiModan registers' do
-      ShogiModan::Assembly::LLVM::FOOTER.should be_instance_of(String)
+      @footer_method.call([]).should be_instance_of(String)
     end
   end
 end

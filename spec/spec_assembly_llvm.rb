@@ -77,7 +77,7 @@ describe 'ShogiModan::Assembly::LLVM' do
     it 'is the LLVM Assembly code which does preparation such as' <<
     'initializing ShogiModan registers' do
       ShogiModan::Assembly::LLVM::HEADER.split(/\n/).join.
-        should match(/%r = alloca \[9 x i8\]/)
+        should match(/%r = alloca \[9 x double\]/)
     end
   end
 

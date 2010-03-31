@@ -49,12 +49,35 @@ describe 'ShogiModan::Assembly::LLVM' do
       run_by_llvm([[:mul, 9, 8], [:mul, 8, 5], [:mod, 9, 8], [:putc, 9, 0]]).should == " "
     end
 
-    it "print 'H' and '8'" do
-      run_by_llvm([[:mul, 9, 8], [:putc, 9, 0], [:sub, 3, 3], [:jump_if, 3, 3], [:mul, 8, 7], [:putc, 8, 0], [:label, 3]]).should == "H8"
+    context ':jump_if' do
+      it "print 'H' and '8'" do
+        run_by_llvm([[:mul, 9, 8], [:putc, 9, 0], [:sub, 3, 3], [:jump_if, 3, 3], [:mul, 8, 7], [:putc, 8, 0], [:label, 3]]).should == "H8"
+      end
+
+      it "print 'H' and skip '8'" do
+        run_by_llvm([[:mul, 9, 8], [:putc, 9, 0], [:jump_if, 9, 3], [:mul, 8, 7], [:putc, 8, 0], [:label, 3]]).should == "H"
+      end
+
+      it "skip '8' and print 'H'" do
+        run_by_llvm([[:jump_if, 9, 3], [:mul, 8, 7], [:putc, 8, 0], [:label, 3], [:mul, 9, 8], [:putc, 9, 0]]).should == "H"
+      end
     end
 
-    it "print 'H' and skip '8'" do
-      run_by_llvm([[:mul, 9, 8], [:putc, 9, 0], [:jump_if, 9, 3], [:mul, 8, 7], [:putc, 8, 0], [:label, 3]]).should == "H"
+    context ':jump_ifp' do
+      it "print 'H' and skip '8'" do
+        # jump_ifp 1
+        run_by_llvm([[:mul, 9, 8], [:putc, 9, 0], [:sub, 4, 3], [:jump_ifp, 4, 3], [:mul, 8, 7], [:putc, 8, 0], [:label, 3]]).should == "H"
+      end
+
+      it "print 'H' and skip '8'" do
+        # jump_ifp 0
+        run_by_llvm([[:mul, 9, 8], [:putc, 9, 0], [:sub, 3, 3], [:jump_ifp, 3, 3], [:mul, 8, 7], [:putc, 8, 0], [:label, 3]]).should == "H"
+      end
+
+      it "print 'H' and '8'" do
+        # jump_ifp -1
+        run_by_llvm([[:mul, 9, 8], [:putc, 9, 0], [:sub, 3, 4], [:jump_ifp, 3, 3], [:mul, 8, 7], [:putc, 8, 0], [:label, 3]]).should == "H8"
+      end
     end
   end
 

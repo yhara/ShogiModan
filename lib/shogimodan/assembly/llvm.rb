@@ -74,12 +74,12 @@ class ShogiModan
               br label %label.#{a}
               label.#{a}:
               EOL
-            when :jump_if
+            when :jump_if, :jump_ifp
               <<-"EOL"
               %tmp#{c += 1} = getelementptr [9 x double]* %r, i32 0, i32 #{a - 1}
               %tmp#{c += 1} = load double* %tmp#{c - 1}, align 1
 
-              %tmp#{c += 1} = fcmp one double %tmp#{c - 1}, 0.0
+              %tmp#{c += 1} = fcmp #{inst == :jump_if ? :one : :oge} double %tmp#{c - 1}, 0.0
               br i1 %tmp#{c}, label %jump_if.true.#{l + 1}, label %jump_if.false.#{l + 1}
 
               jump_if.true.#{l += 1}:

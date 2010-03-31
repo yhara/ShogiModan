@@ -44,6 +44,10 @@ describe 'ShogiModan::Assembly::LLVM' do
     it "calculates 9 * 8 / 2 and putc it" do
       run_by_llvm([[:mul, 9, 8], [:div, 9, 2], [:putc, 9, 0]]).should == "$"
     end
+
+    it "calculates 9 * 8 mod 8 * 5 and putc it" do
+      run_by_llvm([[:mul, 9, 8], [:mul, 8, 5], [:mod, 9, 8], [:putc, 9, 0]]).should == " "
+    end
   end
 
   context '.body' do

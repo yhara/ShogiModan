@@ -41,6 +41,8 @@ class ShogiModan
               operate_register.call inst, a, b
             when :div
               operate_register.call :fdiv, a, b
+            when :mod
+              operate_register.call :frem, a, b
             when :putc
               <<-"EOL"
               %tmp#{c += 1} = getelementptr [9 x double]* %r, i32 0, i32 #{a - 1}

@@ -1,6 +1,14 @@
 require "#{File.expand_path File.dirname __FILE__}/spec_helper.rb"
 require 'tempfile'
 
+def run_by_llvm(iseqs)
+  tfile = Tempfile.new('a').path
+  File.open(tfile, 'w') {|io|
+    io.write ShogiModan::Assembly::LLVM.convert(iseqs)
+  }
+  `llvm-as #{tfile} -o - | lli`
+end
+
 describe 'ShogiModan::Assembly::LLVM' do
   context '.convert' do
     before :each do
@@ -29,17 +37,9 @@ describe 'ShogiModan::Assembly::LLVM' do
     end
 
     it "'s generating code is actually runnable on LLVM" do
-      tfile = Tempfile.new('a').path
-      File.open(tfile, 'w') {|io|
-        io.write ShogiModan::Assembly::LLVM.convert(@iseqs.take(2))
-      }
-      `llvm-as #{tfile} -o - | lli`.should == 'H'
+      run_by_llvm(@iseqs.take(2)).should == 'H'
+      run_by_llvm(@iseqs).should == "Hello, world!\n"
 
-      tfile = Tempfile.new('a').path
-      File.open(tfile, 'w') {|io|
-        io.write ShogiModan::Assembly::LLVM.convert(@iseqs)
-      }
-      `llvm-as #{tfile} -o - | lli`.should == "Hello, world!\n"
     end
   end
 

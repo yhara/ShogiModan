@@ -1,9 +1,14 @@
 # coding: utf-8
 
+# for ruby 1.8.7
+unless [].respond_to?(:sample)
+  class Array; alias sample choice; end
+end
+
 class ShogiModan
   class Encoder
-    def initialize(code)
-      @code = code
+    def initialize(code, autofill=false)
+      @code, @autofill = code, autofill
     end
 
     def encode
@@ -17,7 +22,13 @@ class ShogiModan
           else
             s << (sente ? "▲" : "△")
             s << Compiler::COLS[arg1]
-            s << (arg2 ? Compiler::ROWS[arg2] : "_")
+            if arg2
+              s << Compiler::ROWS[arg2]
+            elsif @autofill
+              s << Compiler::ROWS.sample
+            else
+              s << "_"
+            end
             s << opnames[op]
             sente = !sente
           end
@@ -33,5 +44,5 @@ if $0==__FILE__
 
   puts ShogiModan::Encoder.new([
     [:add, 1, 2], [:label, 3], [:putc, 4]
-  ]).encode
+  ], true).encode
 end

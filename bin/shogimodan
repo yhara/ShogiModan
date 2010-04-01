@@ -1,20 +1,36 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.unshift "#{File.expand_path File.dirname __FILE__}/../lib/"
+require 'optparse'
 require 'shogimodan'
 require 'kconv'
 
-if ARGV.include?("-h")
-  puts "usage: #$0 example/hello.modan"
+$KCODE = "u" if not defined?(Encoding) # for Ruby 1.8
+
+$mode = :execute
+OptionParser.new{|o|
+  o.banner = "usage: #$0 example/hello.modan [options]"
+  o.on("-l", "--llvm", "convert the program to LLVM assembly"){
+    $mode = :llvm
+  }
+  o.on("-h", "--help", "show this message"){
+    puts o
+    exit
+  }
+}.parse!(ARGV)
+
+
+if ARGV.size == 0
+  srcs = [ARGF.read]
 else
-  $KCODE = "u" if not defined?(Encoding) # for Ruby 1.8
+  srcs = ARGV.map{|path| File.read(path)}
+end
 
-  if ARGV.size == 0
-    srcs = [ARGF.read]
-  else
-    srcs = ARGV.map{|path| File.read(path)}
-  end
-
-  srcs.each do |src|
+srcs.each do |src|
+  case $mode
+  when :execute
     ShogiModan.new(src).run
+  when :llvm
+    code = ShogiModan::Compiler.new(src).compile
+    puts ShogiModan::Assembly::LLVM.convert(code)
   end
 end

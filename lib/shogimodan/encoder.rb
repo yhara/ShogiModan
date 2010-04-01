@@ -1,10 +1,5 @@
 # coding: utf-8
 
-# for ruby 1.8.7
-unless [].respond_to?(:sample)
-  class Array; alias sample choice; end
-end
-
 class ShogiModan
   class Encoder
     def initialize(code, autofill=false)
@@ -25,7 +20,7 @@ class ShogiModan
             if arg2
               s << Compiler::ROWS[arg2]
             elsif @autofill
-              s << Compiler::ROWS.sample
+              s << Compiler::ROWS[rand(9)+1]
             else
               s << "_"
             end
@@ -43,6 +38,22 @@ if $0==__FILE__
   require "shogimodan"
 
   puts ShogiModan::Encoder.new([
-    [:add, 1, 2], [:label, 3], [:putc, 4]
+    [:sub, 9, 9], # prev
+    [:sub, 8, 7], # current
+    [:add, 6, 4], [:mul, 6, 6], [:mul, 6, 6],
+    [:sub, 7, 7], [:sub, 7, 6], # counter
+    [:add, 5, 5], # newline
+
+    [:label, 1], # begin loop
+      [:jump_ifp, 7, 2],
+      [:add, 7, 1],
+
+      [:putn, 8],
+      [:putc, 5],
+      [:push, 8], [:add, 8, 9], [:pop, 9],
+
+      [:jump_if, 1, 1],
+    [:label, 2] # end loop
+    
   ], true).encode
 end

@@ -2,3 +2,73 @@ ShogiModan
 ==========
 
 A Ruby implementation of the programming language ModanShogi.
+
+Usage
+-----
+
+execute a program:
+ ./bin/shogimodan example.hello.modan 
+
+convert the program to LLVM assembly: 
+ ./bin/shogimodan example.hello.modan -l
+
+execute a program through LLVM (super fast!):
+ ./bin/shogimodan example.hello.modan -l | llvm-as | lli
+
+Programming Language ModanShogi
+-------------------------------
+
+ModanShogi is a so-called esoteric programming language.
+
+This is a Hello World program written in ModanShogi:
+
+    ▲９八銀 △９二玉 ▲６四歩 △６六銀 ▲６一歩 △同　玉 ▲６七歩 △６一玉
+    ▲６八玉 △６三歩 ▲６九玉 △７七銀 ▲７五金 △７一玉 ▲４八銀 △４二玉
+    ▲９六と △９八歩 ▲同　玉 △６七玉 ▲９五金 △９一玉 ▲６三金 △同　玉
+    ▲６八金 △６二玉 ▲４一歩 △４三玉 ▲５五歩 △５三玉
+
+#### Syntax
+
+  [PLAYER][COL][ROW][PIECE] or labels (*1, *2, ...)
+
+PLAYER: "▲" or "△"
+
+COL: one of "１", "２", "３", "４", "５", "６", "７", "８", "９" 
+
+ROW: one of "一", "二", "三", "四", "五", "六", "七", "八", "九" 
+
+(exception: if COL and ROW are just same as the ones of the previous command, COL may be "同" and ROW may be "　" (full-width space).)
+
+PIECE: one of "と", "歩", "金", "銀", "桂", "香", "龍", "馬", "玉", "王", "飛", "角"
+
+labels: specifies the place to jump by :jump_if, :jump_ifp
+
+#### Semantics
+
+The ModanShogi VM has nine registers, R1 to R9, and a stack.
+The registers are initialized with numbers 1 to 9.
+
+PIECE means the type of the command.
+
+      "と" => :mov X Y  (register X =  register Y)
+      "歩" => :add X Y  (register X += register Y)
+      "金" => :sub X Y  (register X -= register Y)
+      "銀" => :mul X Y  (register X *= register Y)
+      "桂" => :div X Y  (register X /= register Y; result is Float)
+      "香" => :mod X Y  (register X %= register Y)
+      "龍" => :push X,  (push the value of register X to the stack)
+      "馬" => :pop X,   (pops from the stack and stores to register X)
+      "玉" => :putc X,  (print the character whose charcode is
+                         the value of register X)
+      "王" => :putn X,  (print the value of the register X)
+      "飛" => :jump_if X Y,  (if the value of the register X is not 0,
+                              jump to the label whose number is
+                              the value of the register Y)
+      "角" => :jump_ifp X Y, (if the value of the register X >= 0,
+                              jump to the label whose number is
+                              the value of the register Y)
+
+COL and ROW are arguments of the command. They denotes a number from 1 to 9.
+
+PLAYER is just ignored.
+

@@ -22,24 +22,24 @@ ModanShogi is a so-called esoteric programming language.
 
 This is a Hello World program written in ModanShogi:
 
-    $B"%#9H,6d(B $B"$#9Fs6L(B $B"%#6;MJb(B $B"$#6O;6d(B $B"%#60lJb(B $B"$F1!!6L(B $B"%#6<7Jb(B $B"$#60l6L(B
-    $B"%#6H,6L(B $B"$#6;0Jb(B $B"%#66e6L(B $B"$#7<76d(B $B"%#78^6b(B $B"$#70l6L(B $B"%#4H,6d(B $B"$#4Fs6L(B
-    $B"%#9O;$H(B $B"$#9H,Jb(B $B"%F1!!6L(B $B"$#6<76L(B $B"%#98^6b(B $B"$#90l6L(B $B"%#6;06b(B $B"$F1!!6L(B
-    $B"%#6H,6b(B $B"$#6Fs6L(B $B"%#40lJb(B $B"$#4;06L(B $B"%#58^Jb(B $B"$#5;06L(B
+    ▲９八銀 △９二玉 ▲６四歩 △６六銀 ▲６一歩 △同　玉 ▲６七歩 △６一玉
+    ▲６八玉 △６三歩 ▲６九玉 △７七銀 ▲７五金 △７一玉 ▲４八銀 △４二玉
+    ▲９六と △９八歩 ▲同　玉 △６七玉 ▲９五金 △９一玉 ▲６三金 △同　玉
+    ▲６八金 △６二玉 ▲４一歩 △４三玉 ▲５五歩 △５三玉
 
 #### Syntax
 
   [PLAYER][COL][ROW][PIECE] or labels (*1, *2, ...)
 
-PLAYER: "$B"%(B" or "$B"$(B"
+PLAYER: "▲" or "△"
 
-COL: one of "$B#1(B", "$B#2(B", "$B#3(B", "$B#4(B", "$B#5(B", "$B#6(B", "$B#7(B", "$B#8(B", "$B#9(B" 
+COL: one of "１", "２", "３", "４", "５", "６", "７", "８", "９" 
 
-ROW: one of "$B0l(B", "$BFs(B", "$B;0(B", "$B;M(B", "$B8^(B", "$BO;(B", "$B<7(B", "$BH,(B", "$B6e(B" 
+ROW: one of "一", "二", "三", "四", "五", "六", "七", "八", "九" 
 
-(exception: if COL and ROW are just same as the ones of the previous command, COL may be "$BF1(B" and ROW may be "$B!!(B" (full-width space).)
+(exception: if COL and ROW are just same as the ones of the previous command, COL may be "同" and ROW may be "　" (full-width space).)
 
-PIECE: one of "$B$H(B", "$BJb(B", "$B6b(B", "$B6d(B", "$B7K(B", "$B9a(B", "$BN6(B", "$BGO(B", "$B6L(B", "$B2&(B", "$BHt(B", "$B3Q(B"
+PIECE: one of "と", "歩", "金", "銀", "桂", "香", "龍", "馬", "玉", "王", "飛", "角"
 
 labels: specifies the place to jump by :jump_if, :jump_ifp
 
@@ -50,21 +50,21 @@ The registers are initialized with numbers 1 to 9.
 
 PIECE means the type of the command.
 
-      "$B$H(B" => :mov X Y  (register X =  register Y)
-      "$BJb(B" => :add X Y  (register X += register Y)
-      "$B6b(B" => :sub X Y  (register X -= register Y)
-      "$B6d(B" => :mul X Y  (register X *= register Y)
-      "$B7K(B" => :div X Y  (register X /= register Y; result is Float)
-      "$B9a(B" => :mod X Y  (register X %= register Y)
-      "$BN6(B" => :push X,  (push the value of register X to the stack)
-      "$BGO(B" => :pop X,   (pops from the stack and stores to register X)
-      "$B6L(B" => :putc X,  (print the character whose charcode is
+      "と" => :mov X Y  (register X =  register Y)
+      "歩" => :add X Y  (register X += register Y)
+      "金" => :sub X Y  (register X -= register Y)
+      "銀" => :mul X Y  (register X *= register Y)
+      "桂" => :div X Y  (register X /= register Y; result is Float)
+      "香" => :mod X Y  (register X %= register Y)
+      "龍" => :push X,  (push the value of register X to the stack)
+      "馬" => :pop X,   (pops from the stack and stores to register X)
+      "玉" => :putc X,  (print the character whose charcode is
                          the value of register X)
-      "$B2&(B" => :putn X,  (print the value of the register X)
-      "$BHt(B" => :jump_if X Y,  (if the value of the register X is not 0,
+      "王" => :putn X,  (print the value of the register X)
+      "飛" => :jump_if X Y,  (if the value of the register X is not 0,
                               jump to the label whose number is
                               the value of the register Y)
-      "$B3Q(B" => :jump_ifp X Y, (if the value of the register X >= 0,
+      "角" => :jump_ifp X Y, (if the value of the register X >= 0,
                               jump to the label whose number is
                               the value of the register Y)
 

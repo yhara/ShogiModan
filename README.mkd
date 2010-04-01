@@ -1,0 +1,4 @@
+ShogiModan
+==========
+
+A Ruby implementation of the programming language ModanShogi.

@@ -3,6 +3,7 @@
 require 'shogimodan/compiler.rb'
 require 'shogimodan/vm.rb'
 require 'shogimodan/encoder.rb'
+require 'shogimodan/assembly/llvm.rb'
 
 class ShogiModan
   ProgramError = Class.new(StandardError)

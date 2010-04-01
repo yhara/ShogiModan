@@ -9,8 +9,8 @@ class ShogiModan
         "%dst.r = alloca i32\n" <<
         (1..9).map {|i|
           "%r.#{i} = alloca double\n" <<
-          "%header#{i} = getelementptr double* %r.#{i}\n" <<
-          "store double #{i.to_f}, double* %header#{i}, align 1\n"
+          "%r.ptr.#{i} = getelementptr double* %r.#{i}\n" <<
+          "store double #{i.to_f}, double* %r.ptr.#{i}, align 1\n"
         }.join
 
       class << self
@@ -42,12 +42,10 @@ class ShogiModan
           l = -1
           operate_register = lambda {|op, x, y|
             <<-"EOL"
-            %tmp#{c += 1} = getelementptr double* %r.#{x}
-            %tmp#{c += 1} = load double* %tmp#{c - 1}, align 1
-            %tmp#{c += 1} = getelementptr double* %r.#{y}
-            %tmp#{c += 1} = load double* %tmp#{c - 1}, align 1
-            %tmp#{c += 1} = #{op} double %tmp#{c - 3}, %tmp#{c - 1}
-            store double %tmp#{c}, double* %tmp#{c - 4}, align 1
+            %tmp#{c += 1} = load double* %r.ptr.#{x}, align 1
+            %tmp#{c += 1} = load double* %r.ptr.#{y}, align 1
+            %tmp#{c += 1} = #{op} double %tmp#{c - 2}, %tmp#{c - 1}
+            store double %tmp#{c}, double* %r.ptr.#{x}, align 1
             EOL
           }
 
@@ -61,18 +59,15 @@ class ShogiModan
               operate_register.call :frem, a, b
             when :putc
               <<-"EOL"
-              %tmp#{c += 1} = getelementptr double* %r.#{a}
-              %tmp#{c += 1} = load double* %tmp#{c - 1}, align 1
+              %tmp#{c += 1} = load double* %r.ptr.#{a}, align 1
 
               %tmp#{c += 1} = fptosi double %tmp#{c - 1} to i8
               call i32 @putchar(i8 %tmp#{c})
               EOL
             when :mov
               <<-"EOL"
-              %tmp#{c += 1} = getelementptr double* %r.#{a}
-              %tmp#{c += 1} = getelementptr double* %r.#{b}
-              %tmp#{c += 1} = load double* %tmp#{c - 1}, align 1
-              store double %tmp#{c}, double* %tmp#{c - 2}, align 1
+              %tmp#{c += 1} = load double* %r.ptr.#{b}, align 1
+              store double %tmp#{c}, double* %r.ptr.#{a}, align 1
               EOL
             when :label
               <<-"EOL"
@@ -81,8 +76,7 @@ class ShogiModan
               EOL
             when :push
               <<-"EOL"
-              %tmp#{c += 1} = getelementptr double* %r.#{a}
-              %tmp#{c += 1} = load double* %tmp#{c - 1}, align 1
+              %tmp#{c += 1} = load double* %r.ptr.#{a}, align 1
               %tmp#{c += 1} = load i32* %sp
               %tmp#{c += 1} = getelementptr double* %stack, i32 %tmp#{c - 1}
               store double %tmp#{c - 2}, double* %tmp#{c}, align 1
@@ -99,20 +93,17 @@ class ShogiModan
               %tmp#{c += 1} = getelementptr double* %stack, i32 %tmp#{c - 1}
               %tmp#{c += 1} = load double* %tmp#{c - 1}
 
-              %tmp#{c += 1} = getelementptr double* %r.#{a}
-              store double %tmp#{c - 1}, double* %tmp#{c}, align 1
+              store double %tmp#{c}, double* %r.ptr.#{a}, align 1;1
               EOL
             when :jump_if, :jump_ifp
               <<-"EOL"
-              %tmp#{c += 1} = getelementptr double* %r.#{a}
-              %tmp#{c += 1} = load double* %tmp#{c - 1}, align 1
+              %tmp#{c += 1} = load double* %r.ptr.#{a}, align 1
 
               %tmp#{c += 1} = fcmp #{inst == :jump_if ? :one : :oge} double %tmp#{c - 1}, 0.0
               br i1 %tmp#{c}, label %jump_if.true.#{l + 1}, label %jump_if.false.#{l + 1}
 
               jump_if.true.#{l += 1}:
-              %tmp#{c += 1} = getelementptr double* %r.#{b}
-              %tmp#{c += 1} = load double* %tmp#{c - 1}, align 1
+              %tmp#{c += 1} = load double* %r.ptr.#{b}, align 1
               %tmp#{c += 1} = fptoui double %tmp#{c - 1} to i32
               store i32 %tmp#{c}, i32* %dst.r
               br label %switch

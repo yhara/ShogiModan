@@ -26,3 +26,12 @@ class ShogiModan
     end
   end
 end
+
+if $0==__FILE__
+  $LOAD_PATH << "#{File.expand_path File.dirname __FILE__}/../"
+  require "shogimodan"
+
+  puts ShogiModan::Encoder.new([
+    [:add, 1, 2], [:label, 3], [:putc, 4]
+  ]).encode
+end

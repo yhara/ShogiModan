@@ -95,6 +95,13 @@ describe "ShogiModan::VM" do
       end
     end
 
+    it "should execute :putn" do
+      @out = mock($stdout)
+      @out.should_receive(:print).with("100")
+      evaluate [[:add, 5, 5], [:mul, 5, 5],
+                [:putn, 5]]
+    end
+
     it "should execute :jump_if" do
       evaluate [[:jump_if, 1, 1], [:mov, 2, 3], [:label, 1]]
       @vm.registers[2].should == 2

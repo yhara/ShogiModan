@@ -51,6 +51,8 @@ class ShogiModan
           else
             @stdout.print get(arg1).chr
           end
+        when :putn
+          @stdout.print get(arg1).to_s
         when :jump_if
           if get(arg1) != 0
             @pc = lookup_label(get(arg2)) - 1

@@ -1,0 +1,18 @@
+▲９九金 △８七金 ▲６四歩 △６六銀 ▲６六銀 △７七金 ▲７六金 △５五歩 *1 ▲７二角 △７一歩 ▲８四王 △５八玉 ▲８八龍 △８九歩 ▲９二馬 △１一飛 *2
+
+    [:sub, 9, 9], # prev
+    [:sub, 8, 7], # current
+    [:add, 6, 4], [:mul, 6, 6], [:mul, 6, 6],
+    [:sub, 7, 7], [:sub, 7, 6], # counter
+    [:add, 5, 5], # newline
+
+    [:label, 1], # begin loop
+      [:jump_ifp, 7, 2],
+      [:add, 7, 1],
+
+      [:putn, 8],
+      [:putc, 5],
+      [:push, 8], [:add, 8, 9], [:pop, 9],
+
+      [:jump_if, 1, 1],
+    [:label, 2] # end loop

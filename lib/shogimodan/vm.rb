@@ -21,7 +21,7 @@ class ShogiModan
 
       loop do 
         op, arg1, arg2 = @code[@pc]
-        #p [@pc, op, arg1, arg2, @registers, @stack] if $DEBUG
+        #p [@pc, op, arg1, arg2, @registers, @stack]
 
         case op
         when nil

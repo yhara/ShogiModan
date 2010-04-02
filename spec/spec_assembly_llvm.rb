@@ -92,6 +92,12 @@ describe 'ShogiModan::Assembly::LLVM' do
         ]).should == "FGH"
       end
     end
+
+    context ':putn' do
+      it "print 1.5" do
+        Float(run_by_llvm([[:div, 3, 2], [:putn, 3, 1]])).should == 1.5
+      end
+    end
   end
 
   context '.body' do

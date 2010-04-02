@@ -2,6 +2,7 @@ class ShogiModan
   class Assembly
     module LLVM
       HEADER =
+        "@str = internal constant [3 x i8] c\"%f\\00\"\n"<<
         "define void @main() nounwind {\n" <<
         "%stack = alloca double, i32 1000\n" <<
         "%sp = alloca i32\n" <<
@@ -33,6 +34,7 @@ class ShogiModan
               ret void
             }
             declare i32 @putchar(i8) nounwind
+            declare i32 @printf(i8*, ...) nounwind
             declare i8 @getchar() nounwind
           EOL
         end
@@ -63,6 +65,11 @@ class ShogiModan
 
               %tmp#{c += 1} = fptosi double %tmp#{c - 1} to i8
               call i32 @putchar(i8 %tmp#{c})
+              EOL
+            when :putn
+              <<-"EOL"
+              %tmp#{c += 1} = load double* %r.ptr.#{a}, align 1
+              call i32 (i8*, ...)* @printf(i8* getelementptr([3 x i8]* @str,i32 0,i32 0),double %tmp#{c})
               EOL
             when :mov
               <<-"EOL"

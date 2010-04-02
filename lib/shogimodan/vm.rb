@@ -47,9 +47,9 @@ class ShogiModan
           set(arg1, val)
         when :putc
           if defined?(Encoding) then 
-            @stdout.print get(arg1).chr(Encoding::UTF_8)
+            @stdout.print get(arg1).to_i.chr(Encoding::UTF_8)
           else
-            @stdout.print get(arg1).chr
+            @stdout.print get(arg1).to_i.chr
           end
         when :putn
           @stdout.print get(arg1).to_s

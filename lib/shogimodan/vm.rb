@@ -74,7 +74,6 @@ class ShogiModan
       {}.tap{|labels|
         code.each_with_index{|(op, arg1, arg2), i|
           if op == :label
-            check_register_idx(arg1)
             labels[arg1] = i
           end
         }
